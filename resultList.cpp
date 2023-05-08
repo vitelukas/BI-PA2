@@ -35,16 +35,14 @@ public:
     ~CContest() = default;
 
     CContest &addMatch(const string &contestant1, const string &contestant2, const M_ &result) {
-        string c1 = contestant1 < contestant2 ? contestant1 : contestant2;
-        string c2 = c1 == contestant1 ? contestant2 : contestant1;
+        SMatch newM1(contestant1, contestant2, result);
+        SMatch newM2(contestant2, contestant1, result);
 
-        SMatch possibleDuplicate(c1, c2, result);
-        SMatch newMatch(contestant1, contestant2, result);
+        auto search1 = m_matches.find(newM1);
+        auto search2 = m_matches.find(newM2);
 
-        auto search = m_duplicates.find(possibleDuplicate);
-        if (search == m_duplicates.end()) {
-            m_duplicates.insert(possibleDuplicate);
-            m_matches.insert(newMatch);
+        if (search1 == m_matches.end() && search2 == m_matches.end()) {
+            m_matches.insert(newM1);
         } else {
             throw logic_error("Duplicate match!");
         }
@@ -139,7 +137,6 @@ private:
     };
 
     set<SMatch> m_matches;
-    set<SMatch> m_duplicates;
 };
 
 //! ------------------------------------------------------------ CContest CLASS END -------------------------------------------------------------
